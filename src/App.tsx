@@ -10,22 +10,23 @@ function App() {
   const [isEmpty, setIsEmpty] = useState(false);
   // check if news is empty
 
-  async function getNews(title: string) {
-    const request = await fetch(
-      `https://newsapi.org/v2/everything?q=${title}&apiKey=f93e8cdceab34608aee68031f84acd5b`
-    );
-    const response = await request.json();
-    if (response.articles.length === 0 ) {
-      setIsEmpty(true);
-    }else{
-      setIsEmpty(false);
-    }
-    setNews(response.articles);
-    setIsLoading(false);
-    console.log(news);
-  }
+  
 
   useEffect(() => {
+    async function getNews(title: string) {
+      const request = await fetch(
+        `https://newsapi.org/v2/everything?q=${title}&apiKey=f93e8cdceab34608aee68031f84acd5b`
+      );
+      const response = await request.json();
+      if (response.articles.length === 0 ) {
+        setIsEmpty(true);
+      }else{
+        setIsEmpty(false);
+      }
+      setNews(response.articles);
+      setIsLoading(false);
+      console.log(news);
+    }
     // Select DOM element for search form typescript
     const form = document.querySelector('form')!;
     // Add event listener to search form
