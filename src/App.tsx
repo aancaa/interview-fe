@@ -1,20 +1,28 @@
 import { useEffect, useState } from 'react';
-import { Form, FormGroup, Label, Input, Button, Spinner} from 'reactstrap';
+import { Form, FormGroup, Label, Input, Button, Spinner } from 'reactstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import DetailNews from 'components/DetailNews';
 
 function App() {
-  
   const [news, setNews] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  
+  const [isEmpty, setIsEmpty] = useState(false);
+  // check if news is empty
+
   async function getNews(title: string) {
-    const request = await fetch(`https://newsapi.org/v2/everything?q=${title}&apiKey=f93e8cdceab34608aee68031f84acd5b`);
+    const request = await fetch(
+      `https://newsapi.org/v2/everything?q=${title}&apiKey=f93e8cdceab34608aee68031f84acd5b`
+    );
     const response = await request.json();
-    setNews(response.articles)
+    if (response.articles.length === 0 ) {
+      setIsEmpty(true);
+    }else{
+      setIsEmpty(false);
+    }
+    setNews(response.articles);
     setIsLoading(false);
-    console.log(news)
+    console.log(news);
   }
 
   useEffect(() => {
@@ -24,7 +32,8 @@ function App() {
     form.addEventListener('submit', (e: Event) => {
       e.preventDefault();
       setIsLoading(true);
-      const searchTitle = (document.querySelector('input') as HTMLInputElement).value!;
+      const searchTitle = (document.querySelector('input') as HTMLInputElement)
+        .value!;
       getNews(searchTitle);
     });
   }, []);
@@ -38,19 +47,22 @@ function App() {
             <Label for="exampleEmail">Search News</Label>
           </FormGroup>{' '}
           <div className="flex justify-start">
-            <Button outline color="primary">Search</Button>
+            <Button outline color="primary">
+              Search
+            </Button>
           </div>
         </Form>
       </div>
-      {isLoading && (
-        <Spinner>
-        Loading...
-      </Spinner>
+      {isLoading && <Spinner>Loading...</Spinner>}
+      <hr className="border-t-2 border-black my-5" />
+      {isEmpty && (
+        <div className="text-center">
+          <h3>No News Found</h3>
+        </div>
       )}
-      <hr className='border-t-2 border-black my-5'/>
-      <div className='grid grid-cols-3 gap-6 mt-4'>
-        {news.map(item => (
-          <DetailNews news={item}/>
+      <div className="grid grid-cols-3 gap-6 mt-4">
+        {news.map((item) => (
+          <DetailNews news={item} />
         ))}
       </div>
     </div>
